@@ -1,13 +1,15 @@
 {
   "theme": "dark",
   "quietStartup": true,
+  "defaultTools": [
+    "+codemode"
+  ],
   "packages": [
     "npm:@natsubrei/pi-ibn5100-header",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@juicesharp/rpiv-todo",
     "git:github.com/NVlabs/SoL-Pi",
     "npm:pi-web-access",
-    "npm:pi-subagents",
-    "npm:pi-mcp-adapter"
+    "npm:pi-subagents"
   ]
 }
