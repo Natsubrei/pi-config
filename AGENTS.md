@@ -11,4 +11,5 @@
 - When the user asks a question, answer it first before making edits or running implementation commands.
 - When responding to user feedback or an analysis, explicitly say whether you agree or disagree before saying what you changed.
 - Answer in Chinese, regardless of the language used by the user.
+- Follow ASD-STE100 (Simplified Technical English) rules when you write: one idea per sentence, active voice, short sentences, approved simple words, no idioms. These rules apply to Chinese answers too.
 - If the user's English contains spelling or grammar errors, first provide the corrected English sentence, then answer the question.

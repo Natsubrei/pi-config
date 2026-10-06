@@ -2,9 +2,17 @@
 
 pi 的多设备配置同步仓库，通过软链挂载到 `~/.pi/agent/`。
 
-机器相关的默认模型配置（`defaultProvider`、`defaultModel` 等）通过 git
-clean/smudge 过滤器自动剥离，不会进入仓库；各设备的这份配置存放在
-`.local/settings.local.json`（已被 gitignore）。
+机器相关的默认模型配置（`defaultProvider`、`defaultModel`、
+`defaultThinkingLevel`、`lastChangelogVersion`）由 git clean/smudge 过滤器
+在本机与仓库之间双向转换：
+
+- clean：提交或比较前剥离这些字段，并存档到 `.local/settings.local.json`
+  （已被 gitignore，不进仓库）。
+- smudge：检出时把存档合并回 `settings.json`。
+
+Pi 会把默认模型写回 `settings.json`（软链到本仓库）。clean 在下次 git 操作时
+把它存档，所以该选择只在本机生效，不会被提交。`packages`、`theme` 等公共字段
+照常同步。
 
 ## 新设备恢复
 
@@ -14,8 +22,9 @@ cd ~/workspace/pi-config && ./bootstrap.sh
 pi update --extensions
 ```
 
-bootstrap.sh 会自动注册 git 过滤器并挂载配置软链。之后在 `/settings` 里
-选择的默认模型只保存在本机，不会被提交。
+bootstrap.sh 会注册 git 过滤器（含 `filter.piSettings.required`，过滤器失败时
+git 直接报错）、把本机旧 `settings.json` 的默认模型迁入 `.local` 存档，并挂载
+配置软链。之后在 `/settings` 里选择的默认模型只保存在本机，不会被提交。
 
 ## 本机改动后同步
 
@@ -25,6 +34,21 @@ git add -A && git commit -m "chore: 更新配置" && git push
 ```
 
 其他设备 `git pull` 即可生效（软链实时指向仓库文件）。
+
+## 幻影改动
+
+Pi 用「临时文件 + 改名」写回 `settings.json`，每次写回都换 inode。git 对带
+filter 的文件只比较 stat，因此 `git status` 会显示 `M settings.json`，而内容
+没有变化。刷新索引即可：
+
+```bash
+git add settings.json
+```
+
+该命令没有副作用：clean 剥离后内容与仓库一致，不会产生任何提交内容。
+
+`git pull` 之前请先运行该命令。否则 Pi 刚写入的默认模型还没存档，检出会用旧
+存档把它覆盖。
 
 ## 新增要同步的文件
 
@@ -49,6 +73,6 @@ git add -A && git commit -m "chore: 更新配置" && git push
 
 ## 不纳入同步的文件
 
-- `.local/` —— 本机默认模型配置（由过滤器自动管理）
+- `.local/` —— 本机默认模型存档（由 filter 自动读写，初始为 `{}`）
 - `auth.json` —— API 密钥，各设备单独登录
 - `models-store.json`、`sessions/` 等本机内容
