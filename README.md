@@ -57,7 +57,7 @@ git add settings.json
    mv ~/.pi/agent/keybindings.json ~/workspace/pi-config/
    ln -s ~/workspace/pi-config/keybindings.json ~/.pi/agent/keybindings.json
    ```
-2. 在 `bootstrap.sh` 的 `for f in settings.json sol-pi.json` 列表中加上该文件名
+2. 在 `bootstrap.sh` 的 `TRACKED=(settings.json AGENTS.md)` 列表中加上该文件名
 3. 提交并推送，其他设备 `git pull` 后重新运行 `./bootstrap.sh`
 
 ## 全局指令 AGENTS.md

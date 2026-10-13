@@ -8,7 +8,7 @@ set -euo pipefail
 AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 LOCAL_FILE="$REPO_DIR/.local/settings.local.json"
-TRACKED=(settings.json sol-pi.json AGENTS.md)
+TRACKED=(settings.json AGENTS.md)
 
 # --- 1. 注册 git 过滤器，由 filter.js 实现 ------------------------------
 # clean 剥离本机字段并存档；smudge 检出时恢复；required 让过滤器失败时
