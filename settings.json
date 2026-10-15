@@ -10,6 +10,6 @@
     "npm:@juicesharp/rpiv-todo",
     "npm:pi-web-access",
     "npm:pi-subagents",
-    "npm:billion-context"
+    "npm:@dietrichgebert/ponytail"
   ]
 }
