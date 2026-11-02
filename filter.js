@@ -9,6 +9,8 @@ const MACHINE_KEYS = [
   "defaultModel",
   "defaultThinkingLevel",
   "modelThinkingLevels",
+  "deviceId",
+  "trackingId",
 ];
 const LOCAL_FILE = path.join(__dirname, ".local", "settings.local.json");
 

@@ -30,9 +30,9 @@ git add -A && git commit -m "chore: 更新配置" && git push
 
 其他设备 `git pull` 即可。
 
-Pi 每次写回 `settings.json` 都会换成一个新文件。git 对带过滤器的文件不比较内容，只看修改时间等元数据，所以 `git status` 常显示 `M settings.json`，实际与仓库相同。`git add settings.json` 可刷新索引，且不会产生提交内容。
+Pi 原地写 `settings.json`，经软链落到仓库文件。git 比较带过滤器的文件时会先跑 clean，这些字段已被剥走，所以 `git status` 通常干净。
 
-`git pull` 之前先跑这条。否则刚写入的默认模型还没存档，检出会被旧存档覆盖。
+`git pull` 之前先跑 `git add settings.json`，让 clean 把新的本机字段存进 `.local`。否则检出会被存档里的旧值覆盖。
 
 ## 新增要同步的文件
 
