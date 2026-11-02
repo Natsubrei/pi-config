@@ -5,6 +5,7 @@ const path = require("path");
 const mode = process.argv[2];
 const MACHINE_KEYS = [
   "lastChangelogVersion",
+  "extensionChangelogVersions",
   "defaultProvider",
   "defaultModel",
   "defaultThinkingLevel",
