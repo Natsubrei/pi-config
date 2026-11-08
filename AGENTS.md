@@ -1,34 +1,68 @@
 # Agent Instructions
 
-## Language and wording
+## The Four Principles in Detail
 
-- Reply in Chinese. Code, comments, and git history follow the repository language.
-- Correct lexical and grammatical errors in the user's English without restating the whole message. If the intended meaning is ambiguous, ask the user.
-- No odd metaphors or analogies. Say the thing plainly.
-- Define jargon, and spell out every abbreviation and acronym in full, at its first mention. Then keep one term for one concept.
-- Write in the style of Simplified Technical English, the ASD-STE100 standard: put the answer first, one idea in each sentence, active voice, no repetition of the question, no closing summary. Apply these rules to Chinese replies too.
-- Simplifying means shorter sentences, not fewer facts. Keep every fact, number, condition, and uncertainty from the source. If you are not sure, say so in one plain sentence.
+### 1. Think Before Coding
 
-## Code and history
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
 
-- Do not run `git commit`, `git push`, or any other command that writes to repository history unless the user explicitly asks for it.
-- Write a comment only when deleting it would make the next reader decide something wrong; everything else belongs in the commit message.
+LLMs often pick an interpretation silently and run with it. This principle forces explicit reasoning:
 
-## Quality
+- **State assumptions explicitly** — If uncertain, ask rather than guess
+- **Present multiple interpretations** — Don't pick silently when ambiguity exists
+- **Push back when warranted** — If a simpler approach exists, say so
+- **Stop when confused** — Name what's unclear and ask for clarification
 
-- A check counts only when it ran. Report the commands and what stays uncovered. Without a linter, type checker, or test runner, state the gap instead of adding scaffolding.
-- A documentation or configuration change still needs a stated way to check it.
-- Never delete, skip, or weaken tests to pass. Every test asserts. Cover boundary values, invalid input, and state transitions; coverage is not correctness.
-- Keep core logic in pure functions. Pass time, randomness, and network in as parameters so that runs replay.
-- Fix bugs test-first: the regression test fails before the fix and stays in the repository.
-- Test modules through their own interfaces; use differential testing against a reference implementation, and fuzzing where the input space is large.
+### 2. Simplicity First
 
-## Parallel work
+**Minimum code that solves the problem. Nothing speculative.**
 
-- Split independent tasks across subagents; keep work that shares state in one session.
-- When subagents write code at the same time, give each its own git worktree, so that they do not edit the same files.
-- The main agent reviews each subagent's diff and merges the work into the main worktree without committing; subagents never merge into each other. Treat a claimed completion as unverified until reviewed. Committing the result still needs the user's explicit request.
+Combat the tendency toward overengineering:
 
-## User interface
+- No features beyond what was asked
+- No abstractions for single-use code
+- No "flexibility" or "configurability" that wasn't requested
+- No error handling for impossible scenarios
+- If 200 lines could be 50, rewrite it
 
-- When writing UI, avoid unnecessary secondary labels and descriptions. Let the layout do the explaining.
+**The test:** Would a senior engineer say this is overcomplicated? If yes, simplify.
+
+### 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+
+- Don't "improve" adjacent code, comments, or formatting
+- Don't refactor things that aren't broken
+- Match existing style, even if you'd do it differently
+- If you notice unrelated dead code, mention it — don't delete it
+
+When your changes create orphans:
+
+- Remove imports/variables/functions that YOUR changes made unused
+- Don't remove pre-existing dead code unless asked
+
+**The test:** Every changed line should trace directly to the user's request.
+
+### 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform imperative tasks into verifiable goals:
+
+| Instead of... | Transform to... |
+|--------------|-----------------|
+| "Add validation" | "Write tests for invalid inputs, then make them pass" |
+| "Fix the bug" | "Write a test that reproduces it, then make it pass" |
+| "Refactor X" | "Ensure tests pass before and after" |
+
+For multi-step tasks, state a brief plan:
+
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let the LLM loop independently. Weak criteria ("make it work") require constant clarification.
