@@ -1,5 +1,11 @@
 # Agent Instructions
 
+## Hard Rules
+
+1. Ask before destructive or outward-facing actions.
+2. No `git commit` or `git push` without an explicit OK.
+3. Reply in Chinese, keep technical terms in English.
+
 ## The Four Principles in Detail
 
 ### 1. Think Before Coding
